@@ -9,6 +9,7 @@
     "body-parser": "^1.15.2",
     "debug": "~0.7.4",
     "express": "~4.0.0",
+    "express-jwt": "^5.1.0",
     "kafka-node": "^1.0.6",
     "mongo": "^0.1.0",
     "monk": "^3.1.3",

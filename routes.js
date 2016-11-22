@@ -2,8 +2,22 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var jwt = require('express-jwt');
 
 var routes = express();
+
+var jwtCheck = jwt({
+	  secret: new Buffer('8RUb6SwH0_LbQMztgfS69M07b-JDDhGfWfFX9z6WuJbqRNwVlakZE2G2HwYNHfmn', 'base64'),
+	    audience: '2eoGL34nDRULPg3WBuMaVlVQtX9gn3mP'
+});
+
+function hello_world(req,res) {
+	res.send('hello world');
+}
+function hello_mom(req,res) {
+	res.send('hello mom');
+}
+
 
 /// Configure routes
 var apiRoot = '/api';
@@ -12,6 +26,8 @@ var routeList = [
 	'devices',
 	'device_types'
 ]
+
+routes.use(apiRoot,jwtCheck);
 
 // view engine setup
 routes.set('views', path.join(__dirname, 'views'));
