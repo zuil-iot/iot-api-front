@@ -11,23 +11,23 @@ var jwtCheck = jwt({
 	    audience: '2eoGL34nDRULPg3WBuMaVlVQtX9gn3mP'
 });
 
-function hello_world(req,res) {
-	res.send('hello world');
-}
-function hello_mom(req,res) {
-	res.send('hello mom');
-}
-
-
-/// Configure routes
-var apiRoot = '/api';
 var routeDir = './routes';
-var routeList = [
-	'devices',
-	'device_types'
+
+// Routes for internal use
+var internalRoot = '/internal';
+var internalRouteList = [
+	'devices-by-alias',
+	'stream'
 ]
 
-routes.use(apiRoot,jwtCheck);
+/// Configure routes
+var externalRoot = '/api';
+var externalRouteList = [
+	'devices',
+	'stream'
+]
+
+routes.use(externalRoot,jwtCheck);
 
 // view engine setup
 routes.set('views', path.join(__dirname, 'views'));
@@ -43,19 +43,20 @@ routes.use(express.static(path.join(__dirname, 'public')));
 
 // Index
 var index = require(routeDir+'/index');
-routes.use('/', index);
-// Docs
-var docs = require(routeDir+'/docs');
-routes.use('/docs', docs);
-routes.use(apiRoot, docs);
+routes.use(internalRoot, index);
+routes.use(externalRoot, index);
 
-
-// Load all standard routes
-routeList.forEach(function(r) {
+// Load all internal routes
+internalRouteList.forEach(function(r) {
 	var m = require(routeDir+'/'+r);
-	routes.use(apiRoot+'/'+r, m);
+	routes.use(internalRoot+'/'+r, m);
 });
 
+// Load all external routes
+externalRouteList.forEach(function(r) {
+	var m = require(routeDir+'/'+r);
+	routes.use(externalRoot+'/'+r, m);
+});
 
 
 /// catch 404 and forwarding to error handler

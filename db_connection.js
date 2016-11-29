@@ -17,22 +17,38 @@ function readAll (collection_name,cb) {
 	});
 }
 
-function read (collection_name,id,cb) {
+function readAllByQuery(collection_name,query,cb) {
 	var collection = db.get(collection_name);
-	collection.findOne({_id: id}).then((doc) => {
+	collection.find(query).then((docs) => {
+		if(cb && typeof(cb) == 'function') cb(false,docs);
+	}).catch((err) => {
+		if(cb && typeof(cb) == 'function') cb(true,err);
+	});
+}
+
+function readByQuery(collection_name,query,cb) {
+	var collection = db.get(collection_name);
+	collection.findOne(query).then((doc) => {
 		if(cb && typeof(cb) == 'function') cb(false,doc);
 	}).catch((err) => {
 		if(cb && typeof(cb) == 'function') cb(true,err);
 	});
 }
 
-function destroy (collection_name,id,cb) {
+function read (collection_name,id,cb) {
+	readByQuery(collection_name,{_id:id},cb);
+}
+
+function destroyByQuery (collection_name,query,cb) {
 	var collection = db.get(collection_name);
-	collection.findOneAndDelete({_id: id}).then((doc) => {
+	collection.findOneAndDelete(query).then((doc) => {
 		if(cb && typeof(cb) == 'function') cb(false,doc);
 	}).catch((err) => {
 		if(cb && typeof(cb) == 'function') cb(true,err);
 	});
+}
+function destroy (collection_name,id,cb) {
+	destroyByQuery(collection_name,{_id:id},cb);
 }
 
 function create (collection_name,item,cb) {
@@ -44,31 +60,31 @@ function create (collection_name,item,cb) {
 	});
 }
 
-function _update (collection_name,id,item,cb) {
+function updateByQuery (collection_name,query,item,cb) {
 	var collection = db.get(collection_name);
-	console.log("DB: _update, id = ",id);
-	collection.findOneAndUpdate({_id: id},item).then((doc) => {
-		console.log("DB: _update, success");
+	collection.findOneAndUpdate(query,item).then((doc) => {
 		if(cb && typeof(cb) == 'function') cb(false,doc);
 	}).catch((err) => {
-		console.log("DB: _update, error = ",err);
 		if(cb && typeof(cb) == 'function') cb(true,err);
 	});
 }
 
 
-
 function update (collection_name, id, item, cb) {
-	console.log("DB: update");
 	var tmpItem = item;
 	delete tmpItem._id;
 	var updateItem = {$set: tmpItem};
-	_update(collection_name,id,updateItem,cb);
+	updateByQuery(collection_name,{_id:id},updateItem,cb);
+}
+function replaceByQuery (collection_name, query, item, cb) {
+	var updateItem = item;
+	delete updateItem._id;
+	updateByQuery(collection_name,query,updateItem,cb);
 }
 function replace (collection_name, id, item, cb) {
 	var updateItem = item;
 	delete updateItem._id;
-	_update(collection_name,id,updateItem,cb);
+	updateByQuery(collection_name,{_id:id},updateItem,cb);
 }
 
 
@@ -92,3 +108,8 @@ module.exports.readAll = readAll;
 module.exports.update = update;
 module.exports.replace = replace;
 module.exports.destroy = destroy;
+module.exports.readByQuery = readByQuery;
+module.exports.readAllByQuery = readAllByQuery;
+module.exports.updateByQuery = updateByQuery;
+module.exports.replaceByQuery = replaceByQuery;
+module.exports.destroyByQuery = destroyByQuery;

@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t iot/api-front .
+docker build -t iot/api .

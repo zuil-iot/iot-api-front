@@ -69,18 +69,12 @@ router.delete('/:id',function(req,res,next) {
 });
 // Generic Patch
 function _patch(id,updateItem,res,cb) {
-	console.log("Patching")
-	console.log(JSON.stringify(updateItem));
 	db.update(collection_name, id, updateItem, function(err,response){
-		console.log("Patch DB returned")
 		if (err) {
-			console.log("Patch error: ",err)
                         res.send(err);
                 } else if (cb) {
-			console.log("Patch callback")
 			cb(response)
 		} else {
-			console.log("Patch return")
 			res.json(response);
 		}
         });
@@ -92,13 +86,10 @@ function _getDevice(id,cb) {
 }
 // Module specific API
 router.put('/:id/register',function(req,res,next) {
-	console.log("Register Function");
 	id=req.params.id;
 	updateItem={"config.registered": true};
 	_patch(id,updateItem,res,function (response) {
-		console.log("Patched");
 		_getDevice(id, function(device) {
-			console.log("Fetched Device");
 			var k_msg = {
 				deviceID: device.deviceID,
 				msg_type: 'registered',
@@ -116,8 +107,10 @@ router.put('/:id/unregister',function(req,res,next) {
 });
 router.put('/:id/alias',function(req,res,next) {
 	var alias = req.body.alias;
-	console.log("Alias = ",alias);
-	updateItem={"alias": alias};
+	updateItem={
+		"alias"		: alias,
+		"alias_index"	: alias.toLowerCase().replace(/ +/g,"_")
+	};
 	_patch(req.params.id,updateItem,res);
 });
 router.put('/:id/pin',function(req,res,next) {
@@ -128,11 +121,8 @@ router.put('/:id/pin',function(req,res,next) {
 	var updateItem = {
 		[field]: val
 	}
-	console.log(JSON.stringify(updateItem));
 	_patch(id,updateItem,res,function (response) {
-		console.log("Patched");
 		_getDevice(id, function(device) {
-			console.log("Fetched Device");
 			var k_msg = {
 				deviceID: device.deviceID,
 				msg_type: 'set',
