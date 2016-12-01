@@ -85,9 +85,8 @@ function _getDevice(id,cb) {
         });
 }
 // Module specific API
-router.put('/:id/register',function(req,res,next) {
-	id=req.params.id;
-	updateItem={"config.registered": true};
+function _reg(req,res,id,registered) {
+	updateItem={"registered": registered};
 	_patch(id,updateItem,res,function (response) {
 		_getDevice(id, function(device) {
 			var k_msg = {
@@ -99,11 +98,16 @@ router.put('/:id/register',function(req,res,next) {
 			res.json(response);
 		})
 	});
-	
+}
+router.put('/:id/register',function(req,res,next) {
+	id=req.params.id;
+	registered=true;
+	_reg(req,res,id,registered);
 });
 router.put('/:id/unregister',function(req,res,next) {
-	updateItem={"config.registered": false};
-	_patch(req.params.id,updateItem,res);
+	id=req.params.id;
+	registered=false;
+	_reg(req,res,id,registered);
 });
 router.put('/:id/alias',function(req,res,next) {
 	var alias = req.body.alias;
@@ -112,6 +116,26 @@ router.put('/:id/alias',function(req,res,next) {
 		"alias_index"	: alias.toLowerCase().replace(/ +/g,"_")
 	};
 	_patch(req.params.id,updateItem,res);
+});
+router.put('/:id/type',function(req,res,next) {
+	var id=req.params.id;
+	var typeID = req.body.typeID;
+	updateItem={
+		"typeID"	: typeID,
+	};
+	_patch(id,updateItem,res,function (response) {
+		_getDevice(id, function(device) {
+			var k_msg = {
+				deviceID: device.deviceID,
+				msg_type: 'type',
+				data: {
+					typeID: typeID
+				}
+			};
+			k_out.send('device_ra',k_msg);
+			res.json(response);
+		})
+	});
 });
 router.put('/:id/pin',function(req,res,next) {
 	var id=req.params.id;

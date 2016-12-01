@@ -13,6 +13,14 @@ var jwtCheck = jwt({
 
 var routeDir = './routes';
 
+// Routes for testing
+var testRoot = '/test';
+var testRouteList = [
+	'devices-by-alias',
+	'device-types',
+	'stream'
+]
+
 // Routes for internal use
 var internalRoot = '/internal';
 var internalRouteList = [
@@ -20,10 +28,11 @@ var internalRouteList = [
 	'stream'
 ]
 
-/// Configure routes
+// Routes for external use
 var externalRoot = '/api';
 var externalRouteList = [
 	'devices',
+	'device-types',
 	'stream'
 ]
 
@@ -56,6 +65,12 @@ internalRouteList.forEach(function(r) {
 externalRouteList.forEach(function(r) {
 	var m = require(routeDir+'/'+r);
 	routes.use(externalRoot+'/'+r, m);
+});
+
+// Load all test routes
+testRouteList.forEach(function(r) {
+	var m = require(routeDir+'/'+r);
+	routes.use(testRoot+'/'+r, m);
 });
 
 
