@@ -137,11 +137,12 @@ router.put('/:id/type',function(req,res,next) {
 		})
 	});
 });
-router.put('/:id/pin',function(req,res,next) {
+router.put('/:id/set',function(req,res,next) {
 	var id=req.params.id;
-	var pin = req.body.pin;
+	var io_name = req.body.io_name;
+	var slot_name = req.body.slot_name;
 	var val = req.body.val;
-	var field = "req_state.pins."+pin+".val";
+	var field = "req_state.io."+io_name+".slots."+slot_name+".val";
 	var updateItem = {
 		[field]: val
 	}

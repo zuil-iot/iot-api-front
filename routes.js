@@ -16,6 +16,7 @@ var routeDir = './routes';
 // Routes for testing
 var testRoot = '/test';
 var testRouteList = [
+	'devices',
 	'devices-by-alias',
 	'device-types',
 	'stream'

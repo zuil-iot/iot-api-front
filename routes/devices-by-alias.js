@@ -20,12 +20,13 @@ function _patch(id,updateItem,res,cb) {
 }
 
 router.put('/set',function(req,res,next) {
-console.log("Here");
 	var deviceAlias	= req.body.deviceAlias.toLowerCase().replace(/ +/g,"_");		// Alias name of device
 	var pinAlias	= req.body.pinAlias.toLowerCase().replace(/ +/g,"_");		// Alias name of pin
 	var pinValue	= req.body.pinValue.toLowerCase().replace(/ +/g,"_");		// on/off
 	
 console.log(deviceAlias,pinAlias,pinValue);
+	res.send("Not Implemented");
+	console.log("Alexa set needs fixed");
 
 
 	// Get device

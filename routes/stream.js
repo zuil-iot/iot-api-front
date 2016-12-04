@@ -8,7 +8,8 @@ var collection_name = 'stream_data';
 // Read One
 router.get('/',function(req,res,next) {
 	var deviceID = req.query.deviceID;
-	var pin = req.query.pin;
+	var io_name = req.query.io_name;
+	var slot_name = req.query.slot_name;
 	var start_h = parseInt(req.query.start_h);
 	var start_m = parseInt(req.query.start_m);
 	var end_h = parseInt(req.query.end_h);
@@ -25,7 +26,8 @@ router.get('/',function(req,res,next) {
 		{"timestamp" : { $gte: start} },
 		{"timestamp" : { $lte: end} },
 		{"deviceID" : deviceID },
-		{"pin" : pin },
+		{"io_name" : io_name },
+		{"slot_name" : slot_name },
 		]}
 	db.readAllByQuery(collection_name, q, function(err,list){
                 if(err) {
